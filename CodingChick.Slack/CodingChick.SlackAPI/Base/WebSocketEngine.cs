@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CodingChick.SlackAPI.Data;
 using WebSocket4Net;
 
 namespace CodingChick.SlackAPI.Base
@@ -12,15 +13,32 @@ namespace CodingChick.SlackAPI.Base
     public class ChatMessageEventArgs : EventArgs
     {
         public string Message { get; set; }
+        public string ChannelCode { get; set; }
+        public string TimeStamp { get; set; }
+        public string Sender { get; set; }
     }
 
     public class WebSocketEngine : IDisposable
     {
         WebSocket _webSocket;
 
-        public event ChatMessageEventHandler OnMessageRecieved;
-        
+        public event ChatMessageEventHandler OnChatMessageRecieved;
+        public event ChatMessageEventHandler OnChannelMessageRecieved;
+
+        Dictionary<string, Action<SlackMessage>> _messagesActions;
+        private bool _helloRecieved;
+
         public WebSocketEngine(string url, string svnRev)
+        {
+            Connect(url, svnRev);
+        }
+
+        public bool HelloRecieved
+        {
+            get { return _helloRecieved; }
+        }
+
+        public void Connect(string url, string svnRev)
         {
             _webSocket = new WebSocket(
                 string.Format("{0}?svn_rev={1}&login_with_boot_data-0-{2}&on_login-0-{2}&connect-1-{2}",
@@ -29,13 +47,42 @@ namespace CodingChick.SlackAPI.Base
 
             _webSocket.MessageReceived += WebSocketOnMessageReceived;
             _webSocket.Open();
+            _messagesActions = new Dictionary<string, Action<SlackMessage>>()
+            {
+                {"message", message => SendChatMessage(message)},
+                {"hello", message => HandleHelloMessage(message)},
+            };
+        }
+
+        private void HandleHelloMessage(SlackMessage message)
+        {
+            _helloRecieved = true;
         }
 
         private void WebSocketOnMessageReceived(object sender, MessageReceivedEventArgs messageReceivedEventArgs)
         {
-            if (OnMessageRecieved != null)
+            var parser = new SlackJsonParser();
+            var parsedMessage = parser.ParseDataResponse<SlackMessage>(messageReceivedEventArgs.Message);
+
+            Action<SlackMessage> action;
+            if (_messagesActions.TryGetValue(parsedMessage.Type, out action))
             {
-                OnMessageRecieved(this, new ChatMessageEventArgs(){Message = messageReceivedEventArgs.Message});
+                action.Invoke(parsedMessage);
+            }
+        }
+
+        private void SendChatMessage(SlackMessage parsedMessage)
+        {
+            //if (parsedMessage.Subtype != "bot_message")
+            if (OnChatMessageRecieved != null)
+            {
+                OnChatMessageRecieved(this, new ChatMessageEventArgs()
+                {
+                    Message = parsedMessage.Text, 
+                    ChannelCode = parsedMessage.Channel,
+                    TimeStamp = parsedMessage.TimeStamp,
+                    Sender = parsedMessage.User
+                });
             }
         }
 
@@ -46,7 +93,7 @@ namespace CodingChick.SlackAPI.Base
                 _webSocket.Close("done");
             }
 
-            OnMessageRecieved = null;
+            OnChatMessageRecieved = null;
         }
     }
 }

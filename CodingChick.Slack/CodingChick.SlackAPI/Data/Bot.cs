@@ -1,10 +1,16 @@
-﻿namespace CodingChick.SlackAPI.Data
+﻿using Newtonsoft.Json;
+
+namespace CodingChick.SlackAPI.Data
 {
     public class Bot
     {
-        public string id { get; set; }
-        public string name { get; set; }
-        public bool deleted { get; set; }
-        public Icons icons { get; set; }
+        [JsonProperty("id")]
+        public string Id { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
+        [JsonProperty("deleted")]
+        public bool Deleted { get; set; }
+        [JsonProperty("icons")]
+        public Icons Icons { get; set; }
     }
 }

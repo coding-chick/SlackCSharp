@@ -1,13 +1,22 @@
-﻿namespace CodingChick.SlackAPI.Data
+﻿using Newtonsoft.Json;
+
+namespace CodingChick.SlackAPI.Data
 {
     public class Im
     {
-        public string id { get; set; }
-        public string user { get; set; }
-        public int created { get; set; }
-        public string last_read { get; set; }
-        public Message latest { get; set; }
-        public int unread_count { get; set; }
-        public bool is_open { get; set; }
+        [JsonProperty("id")]
+        public string Id { get; set; }
+        [JsonProperty("user")]
+        public string User { get; set; }
+        [JsonProperty("created")]
+        public int Created { get; set; }
+        [JsonProperty("last_read")]
+        public string LastRead { get; set; }
+        [JsonProperty("latest")]
+        public SlackMessage Latest { get; set; }
+        [JsonProperty("unread_count")]
+        public int UnreadCount { get; set; }
+        [JsonProperty("is_open")]
+        public bool IsOpen { get; set; }
     }
 }

@@ -24,6 +24,7 @@ namespace CodingChick.SlackAPI.Base
             _httpClientAccessor = new HttpClientAccessor();
         }
 
+        //TODO: this works with API address
         public async Task<HttpContent> GetAsyncWithToken(string method, List<KeyValuePair<string, string>> queryParams)
         {
             queryParams.Add(new KeyValuePair<string, string>("token", ApplicationToken));
@@ -38,5 +39,8 @@ namespace CodingChick.SlackAPI.Base
             var result = await _httpClientAccessor.GetAsync(finalAddress);
             return result;
         }
+
+
+       
     }
 }

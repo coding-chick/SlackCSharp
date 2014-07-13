@@ -1,7 +1,10 @@
-﻿namespace CodingChick.SlackAPI.Data
+﻿using Newtonsoft.Json;
+
+namespace CodingChick.SlackAPI.Data
 {
     public class Icons
     {
-        public string image_48 { get; set; }
+        [JsonProperty("image_48")]
+        public string Image48 { get; set; }
     }
 }
