@@ -12,10 +12,7 @@ namespace CodingChick.SlackAPI.Base
 
     public class ChatMessageEventArgs : EventArgs
     {
-        public string Message { get; set; }
-        public string ChannelCode { get; set; }
-        public string TimeStamp { get; set; }
-        public string Sender { get; set; }
+        public SlackMessage SlackMessage { get; set; }
     }
 
     public class WebSocketEngine : IDisposable
@@ -73,15 +70,17 @@ namespace CodingChick.SlackAPI.Base
 
         private void SendChatMessage(SlackMessage parsedMessage)
         {
-            //if (parsedMessage.Subtype != "bot_message")
             if (OnChatMessageRecieved != null)
             {
                 OnChatMessageRecieved(this, new ChatMessageEventArgs()
                 {
-                    Message = parsedMessage.Text, 
-                    ChannelCode = parsedMessage.Channel,
-                    TimeStamp = parsedMessage.TimeStamp,
-                    Sender = parsedMessage.User
+                    SlackMessage = new SlackMessage()
+                    {
+                        Text = parsedMessage.Text,
+                        Channel = parsedMessage.Channel,
+                        TimeStamp = parsedMessage.TimeStamp,
+                        User = parsedMessage.User    
+                    }
                 });
             }
         }

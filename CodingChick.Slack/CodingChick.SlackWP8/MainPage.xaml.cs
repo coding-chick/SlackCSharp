@@ -62,11 +62,11 @@ namespace CodingChick.SlackWP8
 
         private void SlackSocketOnChatOnChatMessageRecieved(object source, ChatMessageEventArgs chatMessageEventArgs)
         {
-            if (!string.IsNullOrEmpty(chatMessageEventArgs.Sender))
+            if (!string.IsNullOrEmpty(chatMessageEventArgs.SlackMessage.User) && chatMessageEventArgs.SlackMessage.UserName != _sender)
             {
                 var dispatcher = Deployment.Current.Dispatcher;
-                var displayChatMessage = new CustomConversationViewMessage(chatMessageEventArgs.Message, DateTime.Now,
-                    ConversationViewMessageType.Incoming, chatMessageEventArgs.Sender);
+                var displayChatMessage = new CustomConversationViewMessage(chatMessageEventArgs.SlackMessage.Text, DateTime.Now,
+                    ConversationViewMessageType.Incoming, chatMessageEventArgs.SlackMessage.User);
 
                 if (!dispatcher.CheckAccess())
                 {

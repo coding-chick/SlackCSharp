@@ -21,5 +21,8 @@ namespace CodingChick.SlackAPI.Data
         [JsonProperty("channel")]
         public string Channel { get; set; }
 
+        [JsonProperty("username")]
+        public string UserName { get; set; }
+
     }
 }

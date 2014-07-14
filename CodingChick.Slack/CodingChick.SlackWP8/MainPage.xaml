@@ -74,7 +74,7 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Text="{Binding Path=Sender}"
-                                       Margin="0, 0, 0, 7"
+                                       Margin="0, 0, 0, 8"
                                        HorizontalAlignment="Left"
                                        Foreground="{StaticResource PhoneSubtleBrush}"
                                        Grid.Column="0"/>
@@ -122,10 +122,22 @@
                                 <ColumnDefinition Width="3*"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="1">
-                                <TextBlock Text="{Binding Path=FormattedTimeStamp}"
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Path=Sender}"
+                                       Margin="0, 0, 0, 8"
+                                       HorizontalAlignment="Right"
+                                       Foreground="{StaticResource PhoneSubtleBrush}"
+                                       Grid.Column="0"/>
+                                    <TextBlock Text="{Binding Path=FormattedTimeStamp}"
                                        Margin="0, 0, 0, 4"
                                        HorizontalAlignment="Left"
-                                       Foreground="{StaticResource PhoneSubtleBrush}"/>
+                                       Foreground="{StaticResource PhoneSubtleBrush}"
+                                       Grid.Column="1"/>
+                                </Grid>
 
                                 <primitives:RadPointerContentControl Background="#849A01"
                                                                  TargetPoint="130, -300"
